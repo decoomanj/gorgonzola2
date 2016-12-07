@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+var appHealth bool
+
 // Health
 type HealthFunc func() error
 

@@ -1,7 +1,9 @@
 package gorgonzola
 
 import (
+	"errors"
 	"net/http"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -18,13 +20,27 @@ type ContextHandler func(http.ResponseWriter, *http.Request, *Context)
 
 // Instantiate a new microservice
 func NewMicroService(name string) *MicroService {
-	return &MicroService{
+	return (&MicroService{
 		Admin:   NewAdminServer(),
 		Service: NewServiceServer(),
 		Health:  NewHealth(),
 		Metrics: NewMetrics(),
 		name:    name,
-	}
+	}).RegisterSignalHealth()
+}
+
+func (ms *MicroService) RegisterSignalHealth() *MicroService {
+	ms.Health.Register(&HealthCheck{
+		Name: "signal",
+		Handler: func() error {
+			if shutdownMode {
+				return errors.New("Shutdown mode activated")
+			}
+			return nil
+		},
+		Interval: time.Second,
+	})
+	return ms
 }
 
 // Start the administration only
