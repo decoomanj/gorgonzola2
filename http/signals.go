@@ -30,7 +30,7 @@ func handleSignals() {
 
 		case syscall.SIGINT, syscall.SIGTERM:
 			log.Printf("received signal %#v: graceful shutdown...\n", sig)
-			time.Sleep(2 * time.Second) // wait for a grace time TODO mark as "down"
+			time.Sleep(8 * time.Second) // wait for a grace time TODO mark as "down"
 			shutdown()
 
 		case syscall.SIGQUIT:
