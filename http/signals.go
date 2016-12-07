@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+var shutdownMode bool
+
 // Start signal handling
 func init() {
 	log.Println("Registering signal handler")
