@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var shutdownMode bool
+var shutdownMode bool = false
 
 // Start signal handling
 func init() {
@@ -29,6 +29,7 @@ func handleSignals() {
 			log.Panicf("unexpected signal: %v", sig)
 
 		case syscall.SIGINT, syscall.SIGTERM:
+			shutdownMode=true
 			log.Printf("received signal %#v: graceful shutdown...\n", sig)
 			time.Sleep(8 * time.Second) // wait for a grace time TODO mark as "down"
 			shutdown()
