@@ -30,6 +30,7 @@ func (service *ServiceServer) StartOn(port int) {
 	// start the web server
 	log.Printf("Service is listening on %d....\n", port)
 
+	// TODO: http://www.hydrogen18.com/blog/stop-listening-http-server-go.html
 	if err := http.ListenAndServe(":"+strconv.Itoa(port), service); err != nil {
 		log.Fatal("Service ListenAndServe:", err)
 	}
