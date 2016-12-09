@@ -12,7 +12,7 @@ type MicroService struct {
 	Admin   *AdminServer
 	Service *ServiceServer
 	Health  *Health
-	Metrics *Metrics
+	Metrics *prometheus.Registry
 	name    string
 }
 
@@ -24,7 +24,7 @@ func NewMicroService(name string) *MicroService {
 		Admin:   NewAdminServer(),
 		Service: NewServiceServer(),
 		Health:  NewHealth(),
-		Metrics: NewMetrics(),
+		Metrics: prometheus.DefaultRegisterer.(*prometheus.Registry),
 		name:    name,
 	}).RegisterSignalHealth()
 }
