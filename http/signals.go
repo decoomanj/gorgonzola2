@@ -10,11 +10,14 @@ import (
 	"time"
 )
 
-var shutdownMode bool = false
+var ShutdownChannel chan (int)
+var TerminateChannel chan (int)
 
 // Start signal handling
 func init() {
 	log.Println("Registering signal handler")
+	ShutdownChannel = make(chan (int))
+	TerminateChannel = make(chan (int))
 	go handleSignals()
 }
 
@@ -29,8 +32,8 @@ func handleSignals() {
 			log.Panicf("unexpected signal: %v", sig)
 
 		case syscall.SIGINT, syscall.SIGTERM:
-			shutdownMode=true
-			log.Printf("received signal %#v: graceful shutdown...\n", sig)
+			log.Printf("Shutdown started (signal %#v)\n", sig)
+			close(ShutdownChannel)
 			time.Sleep(8 * time.Second) // wait for a grace time TODO mark as "down"
 			shutdown()
 
@@ -50,7 +53,7 @@ func shutdown() {
 	}
 	flushLogs()
 	fmt.Println("Goodbye!")
-	os.Exit(0)
+	close(TerminateChannel)
 }
 
 func stacktrace() {

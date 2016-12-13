@@ -33,10 +33,12 @@ func (ms *MicroService) RegisterSignalHealth() *MicroService {
 	ms.Health.Register(&HealthCheck{
 		Name: "signal",
 		Handler: func() error {
-			if shutdownMode {
+			select {
+			case <-ShutdownChannel:
 				return errors.New("Shutdown mode activated")
+			default:
+				return nil
 			}
-			return nil
 		},
 		Interval: time.Second,
 	})
